@@ -1,7 +1,7 @@
 // PART 1: SHOW A FORTUNE
 
 function showFortune(evt) {
-    // TODO: get the fortune and show it in the fortune-text div
+    $("#fortune-text").load("/fortune");
 }
 
 $('#get-fortune-button').on('click', showFortune);
@@ -15,7 +15,10 @@ $('#get-fortune-button').on('click', showFortune);
 function showWeather(evt) {
     evt.preventDefault();
     var url = "/weather?zipcode=" + $("#zipcode-field").val();
-    // TODO: request weather with that URL and show the forecast in #weather-info
+    $.get(url, function(result) {
+        var forecast = result.forecast;
+        $("#weather-info").html(forecast);
+    });
 }
 
 $("#weather-form").on('submit', showWeather);
@@ -33,8 +36,12 @@ function orderMelons(evt) {
     $.post("/order-melons",
         $('#order-form').serialize(),
         function (result) {
-            // TODO: show the result message after your form
-            // TODO: if the result code is ERROR, make it show up in red (see our CSS!)
+            var msg = result.msg;
+            var code = result.code;
+            $("#order-status").html(code + "<br>" + msg);
+            if (code == 'ERROR') {
+                $("#order-status").addClass("order-error");
+            }
         }
     );
 }
